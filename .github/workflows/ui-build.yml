@@ -1,0 +1,43 @@
+name: Build UI library
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "packages/ui/**"
+      - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
+      - "package.json"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "packages/ui/**"
+      - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
+      - "package.json"
+
+jobs:
+  build-ui:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+
+      - name: Enable corepack (pnpm)
+        run: corepack enable
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build @example/ui
+        run: pnpm --filter @example/ui build
+
